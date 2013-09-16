@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Core Data Timestamp Converter</title>
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+	<style type="text/css">
+	.space-above {
+		margin-top: 2em;
+	}
+	.row-fluid {
+		margin-left: 0;
+	}
+	</style>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+	<script>
+	
+	Date.prototype.isValid = function() {
+		return !isNaN(this.getTime());
+	};
+	
+	window.onload = function() {
+		
+		var THIRTYONE = 978307200000;
+	
+		function Time() {
+		
+			this.dateTime = ko.observable();
+		
+			this.coreData = ko.computed({
+				read: function() {
+					if (this.dateTime() && this.dateTime().isValid()) {
+						return Math.round((this.dateTime().getTime() - THIRTYONE) / 1000);
+					} else if (this.dateTime() === "") {
+						return "";
+					}
+				},
+				write: function(value) {
+					var time = new Date(parseInt(value) * 1000 + THIRTYONE);
+					this.dateTime(time.isValid() ? time : "");
+				},
+				owner: this
+			});
+		
+			this.formatted = ko.computed({
+				read: function() {
+					if (this.dateTime() && this.dateTime().isValid()) {
+						return moment(this.dateTime()).format('MMM D YYYY, h:mm:ss A');
+					} else if (this.dateTime() === "") {
+						return "";
+					}
+				},
+				write: function(value) {
+					var momentTime;
+					if ((momentTime = moment(value)) && momentTime.isValid()) {
+						this.dateTime(momentTime.toDate());
+					} else {
+						this.dateTime("");
+					}
+				},
+				owner: this
+			});
+		
+			this.unix = ko.computed({
+				read: function() {
+					if (this.dateTime() && this.dateTime().isValid()) {
+						return Math.round(this.dateTime().getTime() / 1000);
+					} else if (this.dateTime() === "") {
+						return "";
+					}
+				},
+				write: function(value) {
+					var time = new Date(parseInt(value) * 1000);
+					this.dateTime(time.isValid() ? time : "");
+				},
+				owner: this
+			});
+		
+			this.javascript = ko.computed({
+				read: function() {
+					if (this.dateTime() && this.dateTime().isValid()) {
+						return this.dateTime().getTime();
+					} else if (this.dateTime() === "") {
+						return "";
+					}
+				},
+				write: function(value) {
+					var time = new Date(parseInt(value));
+					this.dateTime(time.isValid() ? time : "");
+				},
+				owner: this
+			});
+		
+		}
+	
+		function ViewModel() {
+			var self = this;
+			this.times = ko.observableArray([new Time()]);
+			this.removeTime = function() {
+				self.times.remove(this);
+			};
+			this.addTime = function() {
+				self.times.push(new Time());
+			}
+		}
+	
+		ko.applyBindings(new ViewModel());
+	
+	};
+	
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row space-above">
+			<div class="col-md-12">
+				<h2>Core Data Timestamp Converter</h2>
+			</div>
+		</div>
+		<div class="row row-fluid space-above">
+			<div class="col-md-12 table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Core Data</th>
+							<th>Unix</th>
+							<th>JavaScript</th>
+							<th>Formatted</th>
+							<th>
+						</tr>
+					</thead>
+					<tbody  data-bind="foreach: times">
+						<tr>
+							<td><input type="text" data-bind="value: coreData"/></td>
+							<td><input type="text" data-bind="value: unix"/></td>
+							<td><input type="text" data-bind="value: javascript"></td>
+							<td><input type="text" data-bind="value: formatted" class="col-md-11"/></td>
+							<td><button class="btn btn-danger" data-bind="click: $root.removeTime.bind($data)"><i class="icon-trash"></i></button></td>
+						</tr>
+					</tbody>
+				</table>
+				<button class="btn btn-success space-above" data-bind="click: addTime"><i class="icon-plus"></i></button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
