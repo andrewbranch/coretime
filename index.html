@@ -11,6 +11,12 @@
 	.row-fluid {
 		margin-left: 0;
 	}
+	.formatted {
+		min-width: 206px;
+	}
+	td input {
+		margin-top: 4px;
+	}
 	</style>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
@@ -119,27 +125,29 @@
 			</div>
 		</div>
 		<div class="row row-fluid space-above">
-			<div class="col-md-12 table-responsive">
-				<table class="table table-striped table-hover">
-					<thead>
-						<tr>
-							<th>Core Data</th>
-							<th>Unix</th>
-							<th>JavaScript</th>
-							<th>Formatted</th>
-							<th>
-						</tr>
-					</thead>
-					<tbody  data-bind="foreach: times">
-						<tr>
-							<td><input type="text" data-bind="value: coreData"/></td>
-							<td><input type="text" data-bind="value: unix"/></td>
-							<td><input type="text" data-bind="value: javascript"></td>
-							<td><input type="text" data-bind="value: formatted" class="col-md-11"/></td>
-							<td><button class="btn btn-danger" data-bind="click: $root.removeTime.bind($data)"><i class="icon-trash"></i></button></td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="col-md-12">
+				<div class="table-responsive">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Core Data</th>
+								<th>Unix</th>
+								<th>JavaScript</th>
+								<th>Formatted</th>
+								<th>
+							</tr>
+						</thead>
+						<tbody  data-bind="foreach: times">
+							<tr>
+								<td><input type="text" data-bind="value: coreData"/></td>
+								<td><input type="text" data-bind="value: unix"/></td>
+								<td><input type="text" data-bind="value: javascript"></td>
+								<td><input type="text" data-bind="value: formatted" class="formatted"/></td>
+								<td><button class="btn btn-danger" data-bind="click: $root.removeTime.bind($data)"><i class="icon-trash"></i></button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 				<button class="btn btn-success space-above" data-bind="click: addTime"><i class="icon-plus"></i></button>
 			</div>
 		</div>
